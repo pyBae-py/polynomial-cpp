@@ -230,14 +230,60 @@ void sort(Nodeptr head)
 int main()
 {
 	Link objLink,objLink2;
+	string str1;
+	int coeff[3] = { 0,0,0 }, power[2] = {0,0};
+	str1 = "1x^2 + 5x^1 + 2";
 	
-	objLink.iAE(1, 2);
+	int k=0, l=0;
+
+	
+	
+	for (int i = 0; i < str1.length(); i++)
+	{
+		
+		if (isdigit(str1[i]))
+		{
+			if (str1[i + 1] == 'x')
+			{
+				coeff[k] = str1[i] - '0';
+				k++;
+			}
+			else if (str1[i + 1] != 'x' && str1[i + 1] != '^')
+			{
+				coeff[k]= str1[i] - '0';
+				k++;
+			}
+		}
+		else if (str1[i] == '^')
+		{
+			if (isdigit(str1[i + 1]))
+			{
+				power[l] = str1[i + 1] - '0';
+				l++;
+			}
+			else
+			{
+				cout << "\n\n****************************************\n\n";
+				cout << "Error Line # 258: Expected digit after ^";
+				cout << "\n\n****************************************\n\n";
+			}
+		}
+	}
+	
+	for (int i = 0; i < 2; i++)
+	{
+		objLink.iAE(coeff[i], power[i]);
+	}
+
+	cout << "\nTraversing Unsorted First Expression\n";
+	objLink.traverse();
+
+	
+	/*objLink.iAE(1, 2);
 	objLink.iAE(3, 4);
 	objLink.iAE(5, 6);
 	objLink.iAE(7, 8);
 
-	cout << "\nTraversing Unsorted First Expression\n";
-	objLink.traverse();
 	
 	objLink2.iAE(4, 9);
 	objLink2.iAE(84, 4);
@@ -252,7 +298,7 @@ int main()
 	head1 = objLink.getHead();
 	head2 = objLink2.getHead();
 	temp = concatenate(head1, head2);
-	printConcat(temp);
+	printConcat(temp);*/
 
 	/*objLink2.traverse();
 	objLink2.sort();
