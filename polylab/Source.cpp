@@ -232,7 +232,7 @@ int main()
 {
 	Link objLink,objLink2;
 	string str1;
-	int coeff=0, power=0,con=4;
+	int coeff=0, power=0;
 	str1 = "1x^2+5x^1+2x^0";
 	
 	int k=0, l=0;
