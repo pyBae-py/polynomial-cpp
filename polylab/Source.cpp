@@ -77,6 +77,7 @@ void Link::iAE(int coeff,int pow)
 		q = makeNode();
 		q->coeff = coeff;
 		q->power = pow;
+		
 		q->next = NULL;
 		q->prev = p;
 		p->next = q;
@@ -111,7 +112,7 @@ void Link::traverse()
 
 void Link::sort()
 {
-	int temp,temp1;
+	int temp,temp1,temp2;
 	Nodeptr p;
 	int i, j;
 	for (i = 0; i < count - 1; i++)
@@ -128,13 +129,13 @@ void Link::sort()
 				{
 					temp = p->next->power;
 					temp1 = p->next->coeff;
-
+					
 					p->next->power = p->power;
 					p->next->coeff = p->coeff;
-
+					
 					p->power = temp;
 					p->coeff = temp1;
-
+					
 				}
 			}
 		}
@@ -217,10 +218,10 @@ void sort(Nodeptr head)
 					
 					p->next->power = p->power;
 					p->next->coeff = p->coeff;
-
+					
 					p->power = temp;
 					p->coeff = temp1;
-
+					
 				}
 			}
 		}
@@ -231,8 +232,8 @@ int main()
 {
 	Link objLink,objLink2;
 	string str1;
-	int coeff[3] = { 0,0,0 }, power[2] = {0,0};
-	str1 = "1x^2 + 5x^1 + 2";
+	int coeff=0, power=0,con=4;
+	str1 = "1x^2+5x^1+2x^0";
 	
 	int k=0, l=0;
 
@@ -245,20 +246,16 @@ int main()
 		{
 			if (str1[i + 1] == 'x')
 			{
-				coeff[k] = str1[i] - '0';
+				coeff = str1[i] - '0';
 				k++;
 			}
-			else if (str1[i + 1] != 'x' && str1[i + 1] != '^')
-			{
-				coeff[k]= str1[i] - '0';
-				k++;
-			}
+			
 		}
 		else if (str1[i] == '^')
 		{
 			if (isdigit(str1[i + 1]))
 			{
-				power[l] = str1[i + 1] - '0';
+				power = str1[i + 1] - '0';
 				l++;
 			}
 			else
@@ -270,10 +267,9 @@ int main()
 		}
 	}
 	
-	for (int i = 0; i < 2; i++)
-	{
-		objLink.iAE(coeff[i], power[i]);
-	}
+		objLink.iAE(coeff, power);
+	
+	
 
 	cout << "\nTraversing Unsorted First Expression\n";
 	objLink.traverse();
