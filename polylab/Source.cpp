@@ -3,6 +3,10 @@ using namespace std;
 
 typedef struct Node* Nodeptr;
 
+Nodeptr concatenate(Nodeptr, Nodeptr);
+void printConcat(Nodeptr);
+void sort(Nodeptr);
+
 struct Node
 {
 	int info;
@@ -13,13 +17,11 @@ struct Node
 };
 
 
-template <class T>
 class Link
 {
 private:
 	Nodeptr list = NULL;
 	int count;
-	static void sort(Nodeptr);
 public:
 	Link();
 	Nodeptr makeNode();
@@ -29,18 +31,14 @@ public:
 	Nodeptr getTail();
 	void traverse();
 	void sort();
-	static Nodeptr concatenate(Nodeptr, Nodeptr);
-	static void printConcat(Nodeptr);
 };
 
-template<class T>
-Link<T>::Link()
+Link::Link()
 {
 	count = 0;
 }
 
-template<class T>
-Nodeptr Link<T>::makeNode()
+Nodeptr Link::makeNode()
 {
 	Nodeptr p = new Node();
 	p->info = 0;
@@ -51,8 +49,7 @@ Nodeptr Link<T>::makeNode()
 	return p;
 }
 
-template<class T>
-void Link<T>::iAS(int coeff,int pow)
+void Link::iAS(int coeff,int pow)
 {
 	Nodeptr q = makeNode();
 	q->coeff = coeff;
@@ -65,8 +62,7 @@ void Link<T>::iAS(int coeff,int pow)
 
 
 
-template<class T>
-void Link<T>::iAE(int coeff,int pow)
+void Link::iAE(int coeff,int pow)
 {
 	if (list == NULL)
 	{
@@ -88,22 +84,19 @@ void Link<T>::iAE(int coeff,int pow)
 }
 
 
-template<class T>
-Nodeptr Link<T>::getHead()
+Nodeptr Link::getHead()
 {
 	return list;
 }
 
-template<class T>
-Nodeptr Link<T>::getTail()
+Nodeptr Link::getTail()
 {
 	Nodeptr p;
 	for (p = list; p != NULL; p = p->next);
 	return p;
 }
 
-template<class T>
-void Link<T>::traverse()
+void Link::traverse()
 {
 	Nodeptr p;
 	cout << "\n\n";
@@ -115,10 +108,10 @@ void Link<T>::traverse()
 	cout << "\n\n";
 }
 
-template<class T>
-void Link<T>::sort()
+
+void Link::sort()
 {
-	T temp;
+	int temp,temp1;
 	Nodeptr p;
 	int i, j;
 	for (i = 0; i < count - 1; i++)
@@ -131,11 +124,17 @@ void Link<T>::sort()
 				{
 					break;
 				}
-				if (p->info > p->next->info)
+				if (p->power < p->next->power)
 				{
-					temp = p->info;
-					p->info = p->next->info;
-					p->next->info = temp;
+					temp = p->next->power;
+					temp1 = p->next->coeff;
+
+					p->next->power = p->power;
+					p->next->coeff = p->coeff;
+
+					p->power = temp;
+					p->coeff = temp1;
+
 				}
 			}
 		}
@@ -143,8 +142,8 @@ void Link<T>::sort()
 }
 
 
-template<class T>
-Nodeptr Link<T>::concatenate(Nodeptr head1, Nodeptr head2)
+
+Nodeptr concatenate(Nodeptr head1, Nodeptr head2)
 {
 	if (head1 != NULL && head2 != NULL)
 	{
@@ -165,8 +164,8 @@ Nodeptr Link<T>::concatenate(Nodeptr head1, Nodeptr head2)
 	return head1;
 }
 
-template<class T>
-void Link<T>::printConcat(Nodeptr head)
+
+void printConcat(Nodeptr head)
 {
 	cout << "\nPrinting Unsorted Concatenated List\n";
 	Nodeptr p;
@@ -178,7 +177,7 @@ void Link<T>::printConcat(Nodeptr head)
 	}
 	cout << "\n\n";
 
-	Link::sort(head);
+	sort(head);
 	cout << "\nPrinting Sorted Concatenated List\n";
 	cout << "\n\n";
 	for (p = head; p != NULL; p = p->next)
@@ -189,8 +188,8 @@ void Link<T>::printConcat(Nodeptr head)
 	cout << "\n\n";
 }
 
-template<class T>
-void Link<T>::sort(Nodeptr head)
+
+void sort(Nodeptr head)
 {
 	int temp, temp1;
 	Nodeptr a, b;
@@ -230,7 +229,7 @@ void Link<T>::sort(Nodeptr head)
 
 int main()
 {
-	Link<double> objLink,objLink2;
+	Link objLink,objLink2;
 	
 	objLink.iAE(1, 2);
 	objLink.iAE(3, 4);
@@ -252,8 +251,8 @@ int main()
 	Nodeptr temp;
 	head1 = objLink.getHead();
 	head2 = objLink2.getHead();
-	temp = Link<double>::concatenate(head1, head2);
-	Link<double>::printConcat(temp);
+	temp = concatenate(head1, head2);
+	printConcat(temp);
 
 	/*objLink2.traverse();
 	objLink2.sort();
