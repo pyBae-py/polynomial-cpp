@@ -232,12 +232,10 @@ int main()
 {
 	Link objLink,objLink2;
 	string str1;
-	int coeff=0, power=0;
+	int coeff[3] = {}, power[3] = {};
 	str1 = "1x^2+5x^1+2x^0";
 	
 	int k=0, l=0;
-
-	
 	
 	for (int i = 0; i < str1.length(); i++)
 	{
@@ -246,7 +244,11 @@ int main()
 		{
 			if (str1[i + 1] == 'x')
 			{
-				coeff = str1[i] - '0';
+				if (k > 2)
+				{
+					break;
+				}
+				coeff[k] = str1[i] - '0';
 				k++;
 			}
 			
@@ -255,7 +257,11 @@ int main()
 		{
 			if (isdigit(str1[i + 1]))
 			{
-				power = str1[i + 1] - '0';
+				if (l > 2)
+				{
+					break;
+				}
+				power[l] = str1[i + 1] - '0';
 				l++;
 			}
 			else
@@ -267,7 +273,10 @@ int main()
 		}
 	}
 	
-		objLink.iAE(coeff, power);
+	for (int i = 0; i < 3; i++)
+	{
+		objLink.iAE(coeff[i], power[i]);
+	}
 	
 	
 
