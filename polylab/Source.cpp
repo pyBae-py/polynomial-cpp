@@ -31,6 +31,7 @@ public:
 	Nodeptr getTail();
 	void traverse();
 	void sort();
+	int getCount();
 };
 
 Link::Link()
@@ -95,6 +96,10 @@ Nodeptr Link::getTail()
 	Nodeptr p;
 	for (p = list; p != NULL; p = p->next);
 	return p;
+}
+int Link::getCount()
+{
+	return count;
 }
 
 void Link::traverse()
@@ -178,15 +183,6 @@ void printConcat(Nodeptr head)
 	}
 	cout << "\n\n";
 
-	sort(head);
-	cout << "\nPrinting Sorted Concatenated List\n";
-	cout << "\n\n";
-	for (p = head; p != NULL; p = p->next)
-	{
-		cout << p->coeff << "x" << "^" << p->power << " + ";
-
-	}
-	cout << "\n\n";
 }
 
 
@@ -228,15 +224,29 @@ void sort(Nodeptr head)
 	}
 }
 
+void addPoly(Nodeptr p, Nodeptr q)
+{
+	if (p != NULL && q != NULL)
+	{
+		
+	}
+	else
+	{
+		cout << "\n\nEither p or q is NULL: Line Number 239\n\n";
+	}
+}
+
 int main()
 {
 	Link objLink,objLink2;
 	string str1;
 	int coeff[3] = {}, power[3] = {};
 	str1 = "1x^2+5x^1+2x^0";
-	
 	int k=0, l=0;
-	
+
+	Nodeptr head1, head2, concat;
+	int count1, count2;
+
 	for (int i = 0; i < str1.length(); i++)
 	{
 		
@@ -283,36 +293,62 @@ int main()
 	cout << "\nTraversing Unsorted First Expression\n";
 	objLink.traverse();
 
-	
-	/*objLink.iAE(1, 2);
-	objLink.iAE(3, 4);
-	objLink.iAE(5, 6);
-	objLink.iAE(7, 8);
+	string str2;
+	str2 = "8x^2+2x^1+4x^0";
 
-	
-	objLink2.iAE(4, 9);
-	objLink2.iAE(84, 4);
-	objLink2.iAE(45, 6);
-	objLink2.iAE(417, 8);
+	k = 0;
+	l = 0;
+	for (int i = 0; i < str2.length(); i++)
+	{
+
+		if (isdigit(str2[i]))
+		{
+			if (str2[i + 1] == 'x')
+			{
+				if (k > 2)
+				{
+					break;
+				}
+				coeff[k] = str2[i] - '0';
+				k++;
+			}
+
+		}
+		else if (str2[i] == '^')
+		{
+			if (isdigit(str2[i + 1]))
+			{
+				if (l > 2)
+				{
+					break;
+				}
+				power[l] = str2[i + 1] - '0';
+				l++;
+			}
+			else
+			{
+				cout << "\n\n****************************************\n\n";
+				cout << "Error Line # 258: Expected digit after ^";
+				cout << "\n\n****************************************\n\n";
+			}
+		}
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		objLink2.iAE(coeff[i], power[i]);
+	}
 
 	cout << "\nTraversing Unsorted Second Expression\n";
 	objLink2.traverse();
+	
+	count1 = objLink.getCount();
+	count2 = objLink2.getCount();
+	head1  = objLink.getHead();
+	head2  = objLink2.getHead();
 
-	Nodeptr head1, head2;
-	Nodeptr temp;
-	head1 = objLink.getHead();
-	head2 = objLink2.getHead();
-	temp = concatenate(head1, head2);
-	printConcat(temp);*/
+	concat = concatenate(head1, head2);
+	printConcat(concat);
 
-	/*objLink2.traverse();
-	objLink2.sort();
-	Nodeptr head1, head2;
-	Nodeptr temp;
-	head1 = objLink.getHead();
-	head2 = objLink2.getHead();
-	temp = Link<double>::concatenate(head1, head2);
-	cout << "\n\n";
-	objLink2.traverse();*/
 
 }
