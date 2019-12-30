@@ -1,10 +1,10 @@
 ﻿#include<iostream>
+#include<string.h>
+#include<string>
 using namespace std;
 #define MAXN 100
 typedef struct Node* Nodeptr;
 
-Nodeptr concatenate(Nodeptr, Nodeptr);
-void printConcat(Nodeptr);
 void sort(Nodeptr);
 
 struct Node
@@ -20,7 +20,7 @@ struct Node
 class Link
 {
 private:
-	Nodeptr list = NULL;
+	Nodeptr list;
 	int count;
 public:
 	Link();
@@ -36,6 +36,7 @@ public:
 
 Link::Link()
 {
+	list = NULL;
 	count = 0;
 }
 
@@ -104,11 +105,18 @@ int Link::getCount()
 
 void Link::traverse()
 {
-	Nodeptr p;
+	Nodeptr i;
 	cout << "\n\n";
-	for (p = list; p != NULL; p = p->next)
+	for (i = list; i != NULL; i = i->next)
 	{
-		cout << p->coeff << "x" << "^" << p->power << " + ";
+		if (i->power != 0)
+		{
+			cout << i->coeff << "x^" << i->power << " + ";
+		}
+		else
+		{
+			cout << i->coeff << endl;;
+		}
 
 	}
 	cout << "\n\n";
@@ -149,53 +157,6 @@ void Link::sort()
 
 
 
-Nodeptr concatenate(Nodeptr head1, Nodeptr head2)
-{
-	if (head1 != NULL && head2 != NULL)
-	{
-		if (head1->next == NULL)
-		{
-			head1->next = head2;
-		}
-		else
-		{
-			concatenate(head1->next, head2);
-		}
-	}
-	else
-	{
-		cout << "\nEither a or b is NULL\n";
-	}
-
-	return head1;
-}
-
-
-void printConcat(Nodeptr head)
-{
-	cout << "\nPrinting Unsorted Concatenated List\n";
-	Nodeptr p;
-	cout << "\n\n";
-	for (p = head; p != NULL; p = p->next)
-	{
-		cout << p->coeff << "x" << "^" << p->power << " + ";
-
-	}
-	cout << "\n\n";
-
-	sort(head);
-	cout << "\nPrinting Sorted Concatenated List\n";
-	
-	cout << "\n\n";
-	for (p = head; p != NULL; p = p->next)
-	{
-		cout << p->coeff << "x" << "^" << p->power << " + ";
-
-	}
-	cout << "\n\n";
-
-}
-
 
 void sort(Nodeptr head)
 {
@@ -235,54 +196,8 @@ void sort(Nodeptr head)
 	}
 }
 
-Nodeptr makeNode()
-{
-	Nodeptr p = new Node();
-	p->info = 0;
-	p->power = 0;
-	p->coeff = 0;
-	p->next = NULL;
-	p->prev = NULL;
-	return p;
-}
 
-void addPoly(Nodeptr q)
-{
-	for (Nodeptr p = q; p != NULL; p = p->next)
-	{
-		cout << p->coeff << "x" << "^" << p->power << " + ";
-	}
-	Nodeptr temp = makeNode();
-	Nodeptr p;
-	int co;
-	int intTemp;
-	for (Nodeptr i = q; i->next != NULL; i = i->next)
-	{
-		intTemp = i->power;
-
-		for (p = i; p != NULL && p->power == intTemp; p = p->next)
-		{
-
-
-
-			co = p->coeff + i->coeff;
-			//temp->power = intTemp;
-			//temp = temp->next;
-			cout << co << " x ";
-
-		}
-	}
-
-
-	for (Nodeptr p = temp; p != NULL; p = p->next)
-	{
-		cout << p->coeff << "x" << "^" << p->power << " + ";
-	}
-
-}
-
-
-long binomial_coefficient(int n, int m)
+long binomialCoefficient(int n, int m)
 {
 	int i, j;
 	long bc[MAXN][MAXN];
@@ -305,16 +220,183 @@ long binomial_coefficient(int n, int m)
 	return bc[n][m];
 }
 
+void performMultiplication(Link L1, Link L2)
+{
+	
+	Nodeptr  eq1 = L1.getHead(), eq2 = L2.getHead(), check1, check2;
+	int number, power;
+	Link L3;
 
+	sort(eq1);
+	sort(eq2);
+
+	if (eq1 != NULL && eq2 != NULL)
+	{
+		while (eq1 != NULL)
+		{
+			eq2 = L2.getHead();
+			while (eq2 != NULL)
+			{
+				number = eq1->coeff * eq2->coeff;
+				power = eq1->power + eq2->power;
+				L3.iAE(number, power);
+				eq2 = eq2->next;
+			}
+			eq1 = eq1->next;
+		}
+	}
+	cout << "\nResult of multiplication is:  ";
+	L3.traverse();
+	cout << "\n\n";
+}
+
+void performAddition(Link L1, Link L2)
+{
+
+	Nodeptr  eq1 = L1.getHead(), eq2 = L2.getHead(), sum;
+	Link L3;
+
+
+	while (eq1 != NULL && eq2 != NULL)
+	{
+
+		if (eq1->power == eq2->power)
+		{
+			int add = eq1->coeff + eq2->coeff;
+			L3.iAE(add, eq1->power);
+			eq1 = eq1->next;
+			eq2 = eq2->next;
+		}
+
+		else if (eq1->power > eq2->power)
+		{
+			L3.iAE(eq1->coeff, eq1->power);
+			eq1 = eq1->next;
+		}
+		else if (eq1->power < eq2->power)
+		{
+			L3.iAE(eq2->coeff, eq2->power);
+			eq2 = eq2->next;
+		}
+
+	}
+
+	if (eq1 != NULL)
+	{
+		while (eq1 != NULL)
+		{
+			L3.iAE(eq1->coeff, eq1->power);
+			eq1 = eq1->next;
+		}
+	}
+
+	if (eq2 != NULL)
+	{
+		while (eq2 != NULL)
+		{
+			L3.iAE(eq2->coeff, eq2->power);
+			cout << eq2->coeff << eq2->power << endl;
+			eq2 = eq2->next;
+		}
+	}
+
+	sum = L3.getHead();
+
+	cout << "\nResult of addition is:  ";
+
+	for (sum; sum != NULL; sum = sum->next)
+	{
+		if (sum->power != 0)
+		{
+			cout << sum->coeff << "x^" << sum->power << "+";
+		}
+		else
+		{
+			cout << sum->coeff << endl;;
+		}
+	}
+	cout << "\n\n";
+}
+
+
+void performSubtraction(Link L1, Link L2)
+{
+
+	Nodeptr  eq1 = L1.getHead(), eq2 = L2.getHead(), sum;
+	Link L3;
+
+
+	while (eq1 != NULL && eq2 != NULL)
+	{
+
+		if (eq1->power == eq2->power)
+		{
+			int add = eq1->coeff - eq2->coeff;
+			L3.iAE(add, eq1->power);
+			eq1 = eq1->next;
+			eq2 = eq2->next;
+		}
+
+		else if (eq1->power > eq2->power)
+		{
+			L3.iAE(eq1->coeff, eq1->power);
+			eq1 = eq1->next;
+		}
+		else if (eq1->power < eq2->power)
+		{
+			L3.iAE(eq2->coeff, eq2->power);
+			eq2 = eq2->next;
+		}
+
+	}
+
+	if (eq1 != NULL)
+	{
+		while (eq1 != NULL)
+		{
+			L3.iAE(eq1->coeff, eq1->power);
+			eq1 = eq1->next;
+		}
+	}
+
+	if (eq2 != NULL)
+	{
+		while (eq2 != NULL)
+		{
+			L3.iAE(eq2->coeff, eq2->power);
+			cout << eq2->coeff << eq2->power << endl;
+			eq2 = eq2->next;
+		}
+	}
+
+	sum = L3.getHead();
+
+	cout << "\nResult of subtraction is:  ";
+
+	for (sum; sum != NULL; sum = sum->next)
+	{
+		if (sum->power != 0)
+		{
+			cout << sum->coeff << "x^" << sum->power << "+";
+		}
+		else
+		{
+			cout << sum->coeff << endl;;
+		}
+	}
+	cout << "\n\n";
+}
 
 int main()
 {
 	Link objLink, objLink2;
 	string str1;
+	string str2;
 	int coeff[3] = {}, power[3] = {};
 	str1 = "1x^2+5x^1+2x^0";
+	str2 = "8x^2+2x^1+4x^0";
 	int k = 0, l = 0;
-
+	int num1 = 0, num2 = 0;
 	Nodeptr head1, head2, concat;
 	int count1, count2;
 
@@ -348,7 +430,7 @@ int main()
 			else
 			{
 				cout << "\n\n****************************************\n\n";
-				cout << "Error Line # 340: Expected digit after ^";
+				cout << "Error Line # 372: Expected digit after ^";
 				cout << "\n\n****************************************\n\n";
 			}
 		}
@@ -358,14 +440,6 @@ int main()
 	{
 		objLink.iAE(coeff[i], power[i]);
 	}
-
-
-
-	cout << "\nTraversing Unsorted First Expression\n";
-	objLink.traverse();
-
-	string str2;
-	str2 = "8x^2+2x^1+4x^0";
 
 	k = 0;
 	l = 0;
@@ -399,7 +473,7 @@ int main()
 			else
 			{
 				cout << "\n\n****************************************\n\n";
-				cout << "Error Line # 391: Expected digit after ^";
+				cout << "Error Line # 424: Expected digit after ^";
 				cout << "\n\n****************************************\n\n";
 			}
 		}
@@ -410,16 +484,47 @@ int main()
 		objLink2.iAE(coeff[i], power[i]);
 	}
 
-	cout << "\nTraversing Unsorted Second Expression\n";
-	objLink2.traverse();
-
-	count1 = objLink.getCount();
-	count2 = objLink2.getCount();
 	head1 = objLink.getHead();
 	head2 = objLink2.getHead();
 
-	concat = concatenate(head1, head2);
-	printConcat(concat);
+	sort(head1);
+	sort(head2);
 
-	addPoly(concat);
+	cout << "\nTraversing Sorted First Expression\n";
+	for (Nodeptr i = head1; i != NULL; i = i->next)
+	{
+		if (i->power != 0)
+		{
+			cout << i->coeff << "x^" << i->power << " + ";
+		}
+		else
+		{
+			cout << i->coeff << endl;;
+		}
+	}
+
+	cout << "\nTraversing Sorted Second Expression\n";
+	for (Nodeptr i = head2; i != NULL; i = i->next)
+	{
+		if (i->power != 0)
+		{
+			cout << i->coeff << "x^" << i->power << " + ";
+		}
+		else
+		{
+			cout << i->coeff << endl;;
+		}
+	}
+	cout << "\n\n";
+
+	cout << "\nEnter Number 1: >> ";
+	cin >> num1;
+	cout << "\nEnter Number 2: >> ";
+	cin >> num2;
+
+	cout << "\nThe Binomial Coefficient of " << num1 << " & "<< num2 << " is " << binomialCoefficient(num1, num2) << endl;
+	performAddition(objLink, objLink2);
+	performSubtraction(objLink, objLink2);
+	performMultiplication(objLink, objLink2);
+
 }
