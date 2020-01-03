@@ -5,11 +5,12 @@ using namespace std;
 #define MAXN 100
 typedef struct Node* Nodeptr;
 
+int fact(int n);
 void sort(Nodeptr);
 
 struct Node
 {
-	int info;
+	
 	int coeff;
 	int power;
 	Nodeptr next;
@@ -43,7 +44,7 @@ Link::Link()
 Nodeptr Link::makeNode()
 {
 	Nodeptr p = new Node();
-	p->info = 0;
+
 	p->power = 0;
 	p->coeff = 0;
 	p->next = NULL;
@@ -85,7 +86,6 @@ void Link::iAE(int coeff, int pow)
 		p->next = q;
 	}
 }
-
 
 Nodeptr Link::getHead()
 {
@@ -165,10 +165,13 @@ void sort(Nodeptr head)
 	Nodeptr p;
 	int i, j;
 	int c = 0;
+
+	//For finding total number of nodes
 	for (Nodeptr k = head; k != NULL; k = k->next)
 	{
 		c++;
 	}
+
 	for (i = 0; i < c - 1; i++)
 	{
 		for (j = 0; j < c - 1 - i; j++)
@@ -196,28 +199,19 @@ void sort(Nodeptr head)
 	}
 }
 
-
-long binomialCoefficient(int n, int m)
+long binomialCoefficient(int n, int k)
 {
-	int i, j;
-	long bc[MAXN][MAXN];
-	for (i = 0; i <= n; i++)
-	{
-		bc[i][0] = 1;
-	}
-	for (j = 0; j <= n; j++)
-	{
-		bc[j][j] = 1;
-	}
+	return fact(n) / (fact(k) * fact(n - k));
+}
 
-	for (i = 1; i <= n; i++)
-	{
-		for (j = 1; j < i; j++)
-		{
-			bc[i][j] = bc[i - 1][j - 1] + bc[i - 1][j];
-		}
-	}
-	return bc[n][m];
+
+// Returns factorial of n 
+int fact(int n)
+{
+	int res = 1;
+	for (int i = 2; i <= n; i++)
+		res = res * i;
+	return res;
 }
 
 void performMultiplication(Link L1, Link L2)
@@ -225,7 +219,7 @@ void performMultiplication(Link L1, Link L2)
 	
 	Nodeptr  eq1 = L1.getHead(), eq2 = L2.getHead(), check1, check2;
 	int number, power;
-	Link L3;
+	Link L3; //For storing the result of multiplication
 
 	sort(eq1);
 	sort(eq2);
@@ -252,10 +246,8 @@ void performMultiplication(Link L1, Link L2)
 
 void performAddition(Link L1, Link L2)
 {
-
 	Nodeptr  eq1 = L1.getHead(), eq2 = L2.getHead(), sum;
 	Link L3;
-
 
 	while (eq1 != NULL && eq2 != NULL)
 	{
@@ -267,37 +259,14 @@ void performAddition(Link L1, Link L2)
 			eq1 = eq1->next;
 			eq2 = eq2->next;
 		}
-
-		else if (eq1->power > eq2->power)
-		{
-			L3.iAE(eq1->coeff, eq1->power);
-			eq1 = eq1->next;
-		}
-		else if (eq1->power < eq2->power)
+		else
 		{
 			L3.iAE(eq2->coeff, eq2->power);
+			L3.iAE(eq1->coeff, eq1->power);
+			eq1 = eq1->next;
 			eq2 = eq2->next;
 		}
 
-	}
-
-	if (eq1 != NULL)
-	{
-		while (eq1 != NULL)
-		{
-			L3.iAE(eq1->coeff, eq1->power);
-			eq1 = eq1->next;
-		}
-	}
-
-	if (eq2 != NULL)
-	{
-		while (eq2 != NULL)
-		{
-			L3.iAE(eq2->coeff, eq2->power);
-			cout << eq2->coeff << eq2->power << endl;
-			eq2 = eq2->next;
-		}
 	}
 
 	sum = L3.getHead();
@@ -331,42 +300,18 @@ void performSubtraction(Link L1, Link L2)
 
 		if (eq1->power == eq2->power)
 		{
-			int add = eq1->coeff - eq2->coeff;
-			L3.iAE(add, eq1->power);
+			int sub = eq1->coeff - eq2->coeff;
+			L3.iAE(sub, eq1->power);
 			eq1 = eq1->next;
 			eq2 = eq2->next;
 		}
-
-		else if (eq1->power > eq2->power)
-		{
-			L3.iAE(eq1->coeff, eq1->power);
-			eq1 = eq1->next;
-		}
-		else if (eq1->power < eq2->power)
+		else
 		{
 			L3.iAE(eq2->coeff, eq2->power);
-			eq2 = eq2->next;
-		}
-
-	}
-
-	if (eq1 != NULL)
-	{
-		while (eq1 != NULL)
-		{
-			L3.iAE(eq1->coeff, eq1->power);
 			eq1 = eq1->next;
-		}
-	}
-
-	if (eq2 != NULL)
-	{
-		while (eq2 != NULL)
-		{
-			L3.iAE(eq2->coeff, eq2->power);
-			cout << eq2->coeff << eq2->power << endl;
 			eq2 = eq2->next;
 		}
+
 	}
 
 	sum = L3.getHead();
@@ -391,12 +336,16 @@ int main()
 {
 	Link objLink, objLink2;
 	string str1;
+
 	string str2;
-	int coeff[3] = {}, power[3] = {};
+	int coeff[100] = {}, power[100] = {};
+
 	str1 = "1x^2+5x^1+2x^0";
 	str2 = "8x^2+2x^1+4x^0";
+	short choice = 0;
 	int k = 0, l = 0;
 	int num1 = 0, num2 = 0;
+	int count3 = 0;
 	Nodeptr head1, head2, concat;
 	int count1, count2;
 
@@ -412,6 +361,7 @@ int main()
 					break;
 				}
 				coeff[k] = str1[i] - '0';
+				count3++;
 				k++;
 			}
 
@@ -424,13 +374,15 @@ int main()
 				{
 					break;
 				}
+
 				power[l] = str1[i + 1] - '0';
 				l++;
+				count3++;
 			}
 			else
 			{
 				cout << "\n\n****************************************\n\n";
-				cout << "Error Line # 372: Expected digit after ^";
+				cout << "Error Line # 382: Expected digit after ^";
 				cout << "\n\n****************************************\n\n";
 			}
 		}
@@ -443,6 +395,7 @@ int main()
 
 	k = 0;
 	l = 0;
+	count3 = 0;
 	for (int i = 0; i < str2.length(); i++)
 	{
 
@@ -455,6 +408,7 @@ int main()
 					break;
 				}
 				coeff[k] = str2[i] - '0';
+				count3++;
 				k++;
 			}
 
@@ -469,11 +423,12 @@ int main()
 				}
 				power[l] = str2[i + 1] - '0';
 				l++;
+				count3++;
 			}
 			else
 			{
 				cout << "\n\n****************************************\n\n";
-				cout << "Error Line # 424: Expected digit after ^";
+				cout << "Error Line # 426: Expected digit after ^";
 				cout << "\n\n****************************************\n\n";
 			}
 		}
@@ -490,41 +445,89 @@ int main()
 	sort(head1);
 	sort(head2);
 
-	cout << "\nTraversing Sorted First Expression\n";
-	for (Nodeptr i = head1; i != NULL; i = i->next)
+
+	do
 	{
-		if (i->power != 0)
-		{
-			cout << i->coeff << "x^" << i->power << " + ";
-		}
-		else
-		{
-			cout << i->coeff << endl;;
-		}
-	}
+		cout << "\n****************************************\n";
+		cout << "\nWelcome to Calculator";
+		cout << "\nPress:";
+		cout << "\n1. Add Polynomial";
+		cout << "\n2. Subtract Polynomial";
+		cout << "\n3. Multiply Polynomial";
+		cout << "\n4. Binomial Coefficient";
+		cout << "\n5. Traverse Equations";
+		cout << "\n>> ";
+		cout << "\n****************************************\n";
+		cin >> choice;
 
-	cout << "\nTraversing Sorted Second Expression\n";
-	for (Nodeptr i = head2; i != NULL; i = i->next)
-	{
-		if (i->power != 0)
+		if (choice == 1)
 		{
-			cout << i->coeff << "x^" << i->power << " + ";
+			performAddition(objLink, objLink2);
 		}
-		else
+		else if (choice == 2)
 		{
-			cout << i->coeff << endl;;
+			performSubtraction(objLink, objLink2);
 		}
-	}
-	cout << "\n\n";
+		else if (choice == 3)
+		{
+			performMultiplication(objLink, objLink2);
+		}
+		else if (choice == 4)
+		{
+			cout << "\nEnter Number 1: >> ";
+			cin >> num1;
+			cout << "\nEnter Number 2: >> ";
+			cin >> num2;
+			cout << "\nThe Binomial Coefficient of " << num1 << " & " << num2 << " is " << binomialCoefficient(num1, num2) << endl;
+		}
+		else if (choice == 5)
+		{
+			cout << "\nTraversing Sorted First Expression\n";
+			for (Nodeptr i = head1; i != NULL; i = i->next)
+			{
+				if (i->power != 0)
+				{
+					cout << i->coeff << "x^" << i->power << " + ";
+				}
+				else if (i->coeff == 0)
+				{
+					continue;
+				}
+				else
+				{
+					cout << i->coeff << endl;;
+				}
+			}
 
-	cout << "\nEnter Number 1: >> ";
-	cin >> num1;
-	cout << "\nEnter Number 2: >> ";
-	cin >> num2;
+			cout << "\nTraversing Sorted Second Expression\n";
+			for (Nodeptr i = head2; i != NULL; i = i->next)
+			{
+				if (i->power != 0)
+				{
+					cout << i->coeff << "x^" << i->power << " + ";
+				}
+				else if (i->coeff == 0)
+				{
+					continue;
+				}
+				else
+				{
+					cout << i->coeff << endl;;
+				}
+			}
 
-	cout << "\nThe Binomial Coefficient of " << num1 << " & "<< num2 << " is " << binomialCoefficient(num1, num2) << endl;
-	performAddition(objLink, objLink2);
-	performSubtraction(objLink, objLink2);
-	performMultiplication(objLink, objLink2);
+			cout << "\n\n";
 
+		}
+
+		else if (choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5 && choice != 0)
+		{
+			cout << "\nInvalid Key Pressed\n";
+			cout << "\nPlease continue";
+		}
+	} while (choice != 0);
+
+	
+	cout << "\n\n\n";
+	system("PAUSE");
 }
